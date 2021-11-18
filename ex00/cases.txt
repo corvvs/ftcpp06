@@ -37,9 +37,16 @@ inff
 nanf
 +nanf
 -nanf
+infF
++infF
+-infF
+nanF
++nanF
+-nanF
 3.f
 .1f
 3.141592656359798f
+3.141592656359798F
 inf
 +inf
 -inf

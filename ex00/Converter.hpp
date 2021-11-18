@@ -27,6 +27,7 @@ class Converter {
 
         static int          ToInt(const std::string str);
 
+        static float        ToFloat(const std::string str);
         template<typename T>
         static T            ToFloatLike(const std::string str);
 

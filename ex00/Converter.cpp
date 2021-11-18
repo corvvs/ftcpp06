@@ -74,6 +74,10 @@ int     Converter::ToInt(const std::string intstr) {
     return val;
 }
 
+float     Converter::ToFloat(const std::string str) {
+    return ToFloatLike<float>(Utils::DownCase(str.substr(0, str.length() - 1)));
+}
+
 template<typename T>
 T       Converter::ToFloatLike(const std::string str) {
     if (str == "+nan") { return std::numeric_limits<T>::quiet_NaN(); }
@@ -220,7 +224,7 @@ void    Converter::VerdictAndPrint(const std::string str) {
     } else if (IsInt(str)) {
         PrintValues(ToInt(str));
     } else if (IsFloat(str)) {
-        PrintValues(ToFloatLike<float>(str));
+        PrintValues(ToFloat(str));
     } else if (IsDouble(str)) {
         PrintValues(ToFloatLike<double>(str));
     } else {

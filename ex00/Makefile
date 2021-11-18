@@ -1,6 +1,6 @@
 CXX			:=	clang++
 CXXFLAGS	:=	-Wall -Wextra -Werror -std=c++98 --pedantic
-NAME		:=	converter
+NAME		:=	convert
 SRCS		:=	main.cpp Converter.cpp Utils.cpp
 OBJS		:=	$(SRCS:.cpp=.o)
 
@@ -20,4 +20,4 @@ re			:	fclean all
 
 .PHONY		:	run
 run			:	all
-	cat cases.txt | xargs -I{} bash -c 'echo "[case: \"{}\"]"; ./converter "{}"; echo'
+	cat cases.txt | xargs -I{} bash -c 'echo "[case: \"{}\"]"; ./$(NAME) "{}"; echo'
