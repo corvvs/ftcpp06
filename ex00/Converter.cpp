@@ -1,8 +1,8 @@
 #include "Converter.hpp"
 
 bool    Converter::IsChar(const std::string str) {
-    if (str.length() != 1) { return false; }
-    return !!std::isprint(str[0]);
+    if (str.length() != 3) { return false; }
+    return str[0] == '\'' && !!std::isprint(str[1]) && str[2] == '\'';
 }
 
 bool    Converter::IsInt(const std::string str) {
@@ -89,35 +89,33 @@ T       Converter::ToFloatLike(const std::string str) {
     return val;
 }
 
-// ** PrintAsChar **
 template<>
-void    Converter::PrintAsChar(const int val) {
-    if (!isascii(val)) {
-        std::cout << "impossible" << std::endl;
-    } else {
-        PrintAsChar(static_cast<char>(val));
-    }
-}
-
-template<typename T>
-void    Converter::PrintAsChar(const T val) {
-    if (std::isprint(static_cast<int>(val))) {
-        std::cout << "'" << static_cast<char>(val) << "'" << std::endl;
+void    Converter::PrintAsChar(const char val) {
+    if (std::isprint(val)) {
+        std::cout << "'" << val << "'" << std::endl;
     } else {
         std::cout << "Non displayable" << std::endl;
     }
 }
 
-template<typename FLT>
-void    Converter::PrintFloatLikeAsChar(const FLT val) {
-    if (isnan(val) || isinf(val) || val < 0 || 128 <= val) {
+template<>
+void    Converter::PrintAsChar(const int val) {
+    if (val < -128 || 128 <= val) {
         std::cout << "impossible" << std::endl;
     } else {
         PrintAsChar(static_cast<char>(val));
     }
 }
 
-// ** PrintAsInt **
+template<typename FLT>
+void    Converter::PrintFloatLikeAsChar(const FLT val) {
+    if (isnan(val) || isinf(val) || val < -128 || 128 <= val) {
+        std::cout << "impossible" << std::endl;
+    } else {
+        PrintAsChar(static_cast<char>(val));
+    }
+}
+
 template<typename FLT>
 void    Converter::PrintFloatLikeAsInt(const FLT val) {
     if (isnan(val) || isinf(val) || val < INT_MIN || INT_MAX <= val - 1) {
@@ -132,7 +130,6 @@ void    Converter::PrintAsInt(const T val) {
     std::cout << static_cast<int>(val) << std::endl;
 }
 
-// ** PrintAsFloat **
 template<typename INT>
 void    Converter::PrintIntLikeAsFloat(const INT val) {
     std::cout.precision(1);
@@ -155,7 +152,6 @@ void    Converter::PrintAsFloat(const T val) {
         << std::endl;
 }
 
-// ** PrintAsDouble **
 template<typename INT>
 void    Converter::PrintIntLikeAsDouble(const INT val) {
     std::cout.precision(1);
@@ -220,7 +216,7 @@ void    Converter::PrintValues(const double val, bool determined) {
 
 void    Converter::VerdictAndPrint(const std::string str) {
     if (IsChar(str)) {
-        PrintValues(str[0]);
+        PrintValues(str[1]);
     } else if (IsInt(str)) {
         PrintValues(ToInt(str));
     } else if (IsFloat(str)) {

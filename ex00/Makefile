@@ -20,4 +20,4 @@ re			:	fclean all
 
 .PHONY		:	run
 run			:	all
-	cat cases.txt | xargs -I{} bash -c 'echo "[case: \""{}"\"]"; ./converter "{}"; echo'
+	cat cases.txt | xargs -I{} bash -c 'echo "[case: \"{}\"]"; ./converter "{}"; echo'
