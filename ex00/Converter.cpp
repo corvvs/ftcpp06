@@ -34,14 +34,14 @@ bool    Converter::IsFloat(const std::string str) {
     const std::size_t len = str.length();
     if (len < 2) { return false; }
     if (str[len - 1] != 'f') { return false; }
-    return IsCommonFloat(str.substr(0, len - 1));
+    return IsFloatLike(str.substr(0, len - 1));
 }
 
 bool    Converter::IsDouble(const std::string str) {
-    return IsCommonFloat(str);
+    return IsFloatLike(str);
 }
 
-bool    Converter::IsCommonFloat(const std::string str) {
+bool    Converter::IsFloatLike(const std::string str) {
     if (str == "+nan") { return true; }
     if (str == "+inf") { return true; }
     if (str == "-nan") { return true; }
@@ -74,56 +74,25 @@ int     Converter::ToInt(const std::string intstr) {
     return val;
 }
 
-float   Converter::ToFloat(const std::string floatstr) {
-    const std::string str = floatstr.substr(0, floatstr.length() - 1);
-    if (str == "+nan") { return std::numeric_limits<float>::quiet_NaN(); }
-    if (str == "nan") { return std::numeric_limits<float>::quiet_NaN(); }
-    if (str == "-nan") { return -std::numeric_limits<float>::quiet_NaN(); }
-    if (str == "inf") { return std::numeric_limits<float>::infinity(); }
-    if (str == "+inf") { return std::numeric_limits<float>::infinity(); }
-    if (str == "-inf") { return -std::numeric_limits<float>::infinity(); }
+template<typename T>
+T       Converter::ToFloatLike(const std::string str) {
+    if (str == "+nan") { return std::numeric_limits<T>::quiet_NaN(); }
+    if (str == "nan") { return std::numeric_limits<T>::quiet_NaN(); }
+    if (str == "-nan") { return -std::numeric_limits<T>::quiet_NaN(); }
+    if (str == "inf") { return std::numeric_limits<T>::infinity(); }
+    if (str == "+inf") { return std::numeric_limits<T>::infinity(); }
+    if (str == "-inf") { return -std::numeric_limits<T>::infinity(); }
     std::stringstream transformer;
     transformer << str;
-    float val;
+    T val;
     transformer >> val;
     return val;
 }
 
-double  Converter::ToDouble(const std::string doublestr) {
-    const std::string str = doublestr;
-    if (str == "+nan") { return std::numeric_limits<double>::quiet_NaN(); }
-    if (str == "nan") { return std::numeric_limits<double>::quiet_NaN(); }
-    if (str == "-nan") { return -std::numeric_limits<double>::quiet_NaN(); }
-    if (str == "inf") { return std::numeric_limits<double>::infinity(); }
-    if (str == "+inf") { return std::numeric_limits<double>::infinity(); }
-    if (str == "-inf") { return -std::numeric_limits<double>::infinity(); }
-    std::stringstream transformer;
-    transformer << str;
-    double val;
-    transformer >> val;
-    return val;
-}
-
+// ** PrintAsChar **
 template<>
 void    Converter::PrintAsChar(const int val) {
     if (!isascii(val)) {
-        std::cout << "impossible" << std::endl;
-    } else {
-        PrintAsChar(static_cast<char>(val));
-    }
-}
-template<>
-void    Converter::PrintAsChar(const float val) {
-    if (isnan(val) || isinf(val) || val < 0 || 128 <= val) {
-        std::cout << "impossible" << std::endl;
-    } else {
-        PrintAsChar(static_cast<char>(val));
-    }
-}
-
-template<>
-void    Converter::PrintAsChar(const double val) {
-    if (isnan(val) || isinf(val) || val < 0 || 128 <= val) {
         std::cout << "impossible" << std::endl;
     } else {
         PrintAsChar(static_cast<char>(val));
@@ -139,8 +108,18 @@ void    Converter::PrintAsChar(const T val) {
     }
 }
 
-template<>
-void    Converter::PrintAsInt(const float val) {
+template<typename FLT>
+void    Converter::PrintFloatLikeAsChar(const FLT val) {
+    if (isnan(val) || isinf(val) || val < 0 || 128 <= val) {
+        std::cout << "impossible" << std::endl;
+    } else {
+        PrintAsChar(static_cast<char>(val));
+    }
+}
+
+// ** PrintAsInt **
+template<typename FLT>
+void    Converter::PrintFloatLikeAsInt(const FLT val) {
     if (isnan(val) || isinf(val) || val < INT_MIN || INT_MAX <= val - 1) {
         std::cout << "impossible" << std::endl;
     } else {
@@ -148,32 +127,14 @@ void    Converter::PrintAsInt(const float val) {
     }
 }
 
-template<>
-void    Converter::PrintAsInt(const double val) {
-    if (isnan(val) || isinf(val) || val < INT_MIN || INT_MAX <= val - 1) {
-        std::cout << "impossible" << std::endl;
-    } else {
-        PrintAsInt(static_cast<int>(val));
-    }
-}
 template<typename T>
 void    Converter::PrintAsInt(const T val) {
     std::cout << static_cast<int>(val) << std::endl;
 }
 
-template<>
-void    Converter::PrintAsFloat(const char val) {
-    std::cout.precision(1);
-    std::cout
-        << std::showpoint
-        << std::fixed
-        << static_cast<float>(val) << "f"
-        << std::defaultfloat
-        << std::endl;
-}
-
-template<>
-void    Converter::PrintAsFloat(const int val) {
+// ** PrintAsFloat **
+template<typename INT>
+void    Converter::PrintIntLikeAsFloat(const INT val) {
     std::cout.precision(1);
     std::cout
         << std::showpoint
@@ -185,7 +146,7 @@ void    Converter::PrintAsFloat(const int val) {
 
 template<typename T>
 void    Converter::PrintAsFloat(const T val) {
-    std::cout.precision(6);
+    std::cout.precision(8);
     std::cout
         << std::showpoint
         << std::fixed
@@ -194,19 +155,9 @@ void    Converter::PrintAsFloat(const T val) {
         << std::endl;
 }
 
-template<>
-void    Converter::PrintAsDouble(const char val) {
-    std::cout.precision(1);
-    std::cout
-        << std::showpoint
-        << std::fixed
-        << static_cast<double>(val)
-        << std::defaultfloat
-        << std::endl;
-}
-
-template<>
-void    Converter::PrintAsDouble(const int val) {
+// ** PrintAsDouble **
+template<typename INT>
+void    Converter::PrintIntLikeAsDouble(const INT val) {
     std::cout.precision(1);
     std::cout
         << std::showpoint
@@ -218,7 +169,7 @@ void    Converter::PrintAsDouble(const int val) {
 
 template<typename T>
 void    Converter::PrintAsDouble(const T val) {
-    std::cout.precision(6);
+    std::cout.precision(15);
     std::cout
         << std::showpoint
         << std::fixed
@@ -228,41 +179,41 @@ void    Converter::PrintAsDouble(const T val) {
 }
 
 template<>
-void    Converter::PrintValues(const char val) {
-    std::cout << Constants::kTextInfo;
+void    Converter::PrintValues(const char val, bool determined) {
+    std::cout << (determined ? Constants::kTextInfo : Constants::kTextWarning);
     std::cout << "char: "; PrintAsChar(val);
     std::cout << Constants::kTextReset;
     std::cout << "int: ";    PrintAsInt(val);
-    std::cout << "float: ";  PrintAsFloat(val);
-    std::cout << "double: "; PrintAsDouble(val);
+    std::cout << "float: ";  PrintIntLikeAsFloat(val);
+    std::cout << "double: "; PrintIntLikeAsDouble(val);
 }
 
 template<>
-void    Converter::PrintValues(const int val) {
+void    Converter::PrintValues(const int val, bool determined) {
     std::cout << "char: ";   PrintAsChar(val);
-    std::cout << Constants::kTextInfo;
+    std::cout << (determined ? Constants::kTextInfo : Constants::kTextWarning);
     std::cout << "int: ";    PrintAsInt(val);
     std::cout << Constants::kTextReset;
-    std::cout << "float: ";  PrintAsFloat(val);
-    std::cout << "double: "; PrintAsDouble(val);
+    std::cout << "float: ";  PrintIntLikeAsFloat(val);
+    std::cout << "double: "; PrintIntLikeAsDouble(val);
 }
 
 template<>
-void    Converter::PrintValues(const float val) {
-    std::cout << "char: ";   PrintAsChar(val);
-    std::cout << "int: ";    PrintAsInt(val);
-    std::cout << Constants::kTextInfo;
+void    Converter::PrintValues(const float val, bool determined) {
+    std::cout << "char: ";   PrintFloatLikeAsChar(val);
+    std::cout << "int: ";    PrintFloatLikeAsInt(val);
+    std::cout << (determined ? Constants::kTextInfo : Constants::kTextWarning);
     std::cout << "float: ";  PrintAsFloat(val);
     std::cout << Constants::kTextReset;
     std::cout << "double: "; PrintAsDouble(val);
 }
 
 template<>
-void    Converter::PrintValues(const double val) {
-    std::cout << "char: ";   PrintAsChar(val);
-    std::cout << "int: ";    PrintAsInt(val);
+void    Converter::PrintValues(const double val, bool determined) {
+    std::cout << "char: ";   PrintFloatLikeAsChar(val);
+    std::cout << "int: ";    PrintFloatLikeAsInt(val);
     std::cout << "float: ";  PrintAsFloat(val);
-    std::cout << Constants::kTextInfo;
+    std::cout << (determined ? Constants::kTextInfo : Constants::kTextWarning);
     std::cout << "double: "; PrintAsDouble(val);
     std::cout << Constants::kTextReset;
 }
@@ -273,8 +224,10 @@ void    Converter::VerdictAndPrint(const std::string str) {
     } else if (IsInt(str)) {
         PrintValues(ToInt(str));
     } else if (IsFloat(str)) {
-        PrintValues(ToFloat(str));
+        PrintValues(ToFloatLike<float>(str));
     } else if (IsDouble(str)) {
-        PrintValues(ToDouble(str));
+        PrintValues(ToFloatLike<double>(str));
+    } else {
+        PrintValues(ToFloatLike<double>(str), false);
     }
 }

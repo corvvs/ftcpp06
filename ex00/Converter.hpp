@@ -23,20 +23,29 @@ class Converter {
         static bool         IsInt(const std::string str);
         static bool         IsFloat(const std::string str);
         static bool         IsDouble(const std::string str);
-        static bool         IsCommonFloat(const std::string str);
+        static bool         IsFloatLike(const std::string str);
 
         static int          ToInt(const std::string str);
-        static float        ToFloat(const std::string str);
-        static double       ToDouble(const std::string str);
 
         template<typename T>
-        static void         PrintValues(const T val);
+        static T            ToFloatLike(const std::string str);
+
+        template<typename T>
+        static void         PrintValues(const T val, bool determined = true);
+        template<typename FLT>
+        static void         PrintFloatLikeAsChar(const FLT val);
         template<typename T>
         static void         PrintAsChar(const T val);
+        template<typename FLT>
+        static void         PrintFloatLikeAsInt(const FLT val);
         template<typename T>
         static void         PrintAsInt(const T val);
+        template<typename INT>
+        static void         PrintIntLikeAsFloat(const INT val);
         template<typename T>
         static void         PrintAsFloat(const T val);
+        template<typename INT>
+        static void         PrintIntLikeAsDouble(const INT val);
         template<typename T>
         static void         PrintAsDouble(const T val);
 };
