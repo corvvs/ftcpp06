@@ -1,0 +1,1 @@
+cat cases.txt | ruby -ne 'puts "[case: #{$_.chomp}]"; puts `./convert #{$_.chomp}`; puts'
