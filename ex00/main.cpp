@@ -9,7 +9,7 @@ int main(int argc, char **argv) {
             << Constants::kTextWarning
             << "least 1 argument needed"
             << Constants::kTextReset << std::endl;
-            return 1;
+        return 1;
     }
     const std::string s(argv[1]);
     Converter::VerdictAndPrint(s);
