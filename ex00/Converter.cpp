@@ -33,7 +33,7 @@ bool    Converter::IsInt(const std::string str) {
 bool    Converter::IsFloat(const std::string str) {
     const std::size_t len = str.length();
     if (len < 2) { return false; }
-    if (str[len - 1] != 'f') { return false; }
+    if (std::tolower(str[len - 1]) != 'f') { return false; }
     return IsFloatLike(str.substr(0, len - 1));
 }
 
