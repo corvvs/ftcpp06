@@ -4,10 +4,10 @@
 #include "Constants.hpp"
 
 int main(int argc, char **argv) {
-    if (argc < 2) {
+    if (argc != 2) {
         std::cout
             << Constants::kTextWarning
-            << "least 1 argument needed"
+            << "just only 1 argument needed"
             << Constants::kTextReset << std::endl;
         return 1;
     }

@@ -42,26 +42,17 @@ Base*   generate(void) {
 
 // that displays "A", "B" or "C" according to the real type of p.
 void    identify(Base* p) {
-    {
-        A* q = dynamic_cast<A *>(p);
-        if (q) {
-            std::cout << "A" << std::endl;
-            return;
-        }
+    if (dynamic_cast<A *>(p)) {
+        std::cout << "A" << std::endl;
+        return;
     }
-    {
-        B* q = dynamic_cast<B *>(p);
-        if (q) {
-            std::cout << "B" << std::endl;
-            return;
-        }
+    if (dynamic_cast<B *>(p)) {
+        std::cout << "B" << std::endl;
+        return;
     }
-    {
-        C* q = dynamic_cast<C *>(p);
-        if (q) {
-            std::cout << "C" << std::endl;
-            return;
-        }
+    if (dynamic_cast<C *>(p)) {
+        std::cout << "C" << std::endl;
+        return;
     }
     throw std::string("Unexpected Pointer is given");
 }
@@ -93,14 +84,18 @@ void    identify(Base& p) {
     } catch (std::bad_cast& e) {
 
     }
-    throw std::string("Unexpected Pointer is given");
+    throw std::string("Unexpected Reference is given");
 }
 
 int main() {
-    std::srand((unsigned int) std::time(NULL));
+    std::srand(static_cast<unsigned int>(std::time(NULL)));
     for (int i = 0; i < 100; i += 1) {
+        std::cout
+            << "Trial #" << i
+            << std::endl;
+        Base* b = NULL;
         try {
-            Base* b = generate();
+            b = generate();
             std::cout
                 << Constants::kTextInfo
                 << "[" << b << "] "
@@ -119,6 +114,7 @@ int main() {
                 << "** some unexpected exception detected **"
                 << Constants::kTextReset << std::endl;
         }
+        delete b;
     }
 }
 

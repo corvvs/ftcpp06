@@ -6,11 +6,13 @@ bool    Converter::IsChar(const std::string str) {
 }
 
 bool    Converter::IsInt(const std::string str) {
-    const std::string ltrimmed = str.substr(0, 2) == "+-"
+    const std::string ltrimmed = Utils::TrimLeftRepeated(
+            str.substr(0, 2) == "+-"
             ? Utils::TrimLeftRepeated(str, "+-")
-            : Utils::TrimLeftRepeated(str, "-+");
+            : Utils::TrimLeftRepeated(str, "-+")
+        , "+");
     if (ltrimmed.length() < 1) { return false; }
-    if (ltrimmed == "0") { return true; }
+    if (ltrimmed == "-0") { return true; }
     // character check
     std::size_t i = 0;
     if (ltrimmed[0] == '-' || ltrimmed[0] == '+') { i += 1; }
@@ -27,7 +29,7 @@ bool    Converter::IsInt(const std::string str) {
     transformer << converted;
     std::string reverse_converted;
     transformer >> reverse_converted;
-    return ltrimmed == reverse_converted;
+    return (ltrimmed == reverse_converted) ? true : false;
 }
 
 bool    Converter::IsFloat(const std::string str) {

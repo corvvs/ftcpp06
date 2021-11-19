@@ -1,8 +1,16 @@
 #include <iostream>
 #include <exception>
+# include <cstdlib>
 #include "Data.hpp"
-#include "Serializer.hpp"
 #include "Constants.hpp"
+
+uintptr_t   serialize(Data* data) {
+    return reinterpret_cast<uintptr_t>(data);
+}
+
+Data*       deserialize(uintptr_t ptr) {
+    return reinterpret_cast<Data *>(ptr);
+}
 
 int main() {
     try {
@@ -12,9 +20,9 @@ int main() {
         std::cout
             << "value:\t\t"
             << *d1 << std::endl;
-        uintptr_t ptr = Seriaizer::serialize(d1);
-        std::cout << "uintptr_t:\t" << ptr << std::endl;
-        Data *d2 = Seriaizer::deserialize(ptr);
+        uintptr_t ptr = serialize(d1);
+        std::cout << "uintptr_t:\t  " << ptr << std::endl;
+        Data *d2 = deserialize(ptr);
         std::cout << "d2:\t\t" << d2 << std::endl;
         std::cout
             << "value:\t\t"
